@@ -123,7 +123,7 @@ var HistorysBetsQuery = &graphql.Field{
 			return nil, err
 		}
 		var historysBets []model.HistoryBets
-		for i := 0; i < 4; i++ {
+		for i := 0; i < 8; i++ {
 			var balance int
 			year, week := time.Now().AddDate(0,0,-(i*7)).ISOWeek()
 			fromDate, toDate := util.ISOWeekRange(year, week)
