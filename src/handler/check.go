@@ -1,12 +1,20 @@
 package handler
 
 import (
-	"sport_bookie_server/src/result"
-	"github.com/gin-gonic/gin"
-	"sport_bookie_server/src/scheduler"
 	"log"
+	"net/http"
+	"sport_bookie_server/src/result"
+	"sport_bookie_server/src/scheduler"
+
+	"github.com/gin-gonic/gin"
 )
 
+// PingHandler ...
+func PingHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "pong",
+	})
+}
 
 // CheckHandler manual update db
 func CheckHandler(c *gin.Context) {
@@ -14,4 +22,5 @@ func CheckHandler(c *gin.Context) {
 	scheduler.UpdateScore()
 	result.CheckOpenBet()
 	log.Println("done")
+	c.JSON(http.StatusOK, gin.H{"message": "done"})
 }

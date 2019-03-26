@@ -21,6 +21,7 @@ func Run(port string) {
 		})
 	})
 
+	router.GET("/ping", handler.PingHandler)
 	router.GET("/check", handler.CheckHandler)
 	router.POST("/register", handler.RegisterHandler)
 	router.POST("/login", middleware.AuthMiddleware.LoginHandler)
