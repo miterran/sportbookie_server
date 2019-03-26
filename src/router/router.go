@@ -1,7 +1,7 @@
 package router
 
 import (
-	"fmt"
+	"log"
 	"sport_bookie_server/src/handler"
 	"sport_bookie_server/src/middleware"
 
@@ -15,13 +15,12 @@ func Run(port string) {
 	router.Use(cors.Default())
 
 	router.GET("/ping", func(c *gin.Context) {
-		fmt.Println("ping")
+		log.Println("ping")
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
 
-	router.GET("/ping", handler.PingHandler)
 	router.GET("/check", handler.CheckHandler)
 	router.POST("/register", handler.RegisterHandler)
 	router.POST("/login", middleware.AuthMiddleware.LoginHandler)
