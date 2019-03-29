@@ -9,11 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CheckHandler manual update db
-func CheckHandler(c *gin.Context) {
+// ManualUpdate manual update db
+func ManualUpdate(c *gin.Context) {
 	scheduler.UpdateGame()
 	scheduler.UpdateScore()
-	result.CheckOpenBet()
+	result.FinalOpenBetResult()
 	log.Println("done")
 	c.JSON(http.StatusOK, gin.H{"message": "done"})
 }

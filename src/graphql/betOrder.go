@@ -1,13 +1,13 @@
 package graphql
 
 import (
-	"log"
 	"sport_bookie_server/src/db"
-	"github.com/graphql-go/graphql"
 	"sport_bookie_server/src/model"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/bson"
 	"time"
+
+	"github.com/graphql-go/graphql"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // BetOrderStatusType ...
@@ -94,31 +94,30 @@ var SubmitBetOrder = &graphql.Field{
 		if !game.Line.CompareLatestLine(selectedLineType, selectedPointsType, selectedPoints, selectOddType, selectedOdd) {
 			return &BetOrderStatus{4}, nil
 		}
-		selected := model.Selected {
-			LineType: selectedLineType,
+		selected := model.Selected{
+			LineType:   selectedLineType,
 			PointsType: selectedPointsType,
-			Points: selectedPoints,
-			OddType: selectOddType,
-			Odd: selectedOdd,
-			Target: selectedTarget,
+			Points:     selectedPoints,
+			OddType:    selectOddType,
+			Odd:        selectedOdd,
+			Target:     selectedTarget,
 		}
-		wager := model.Wager {
+		wager := model.Wager{
 			AtRisk: atRisk,
-			ToWin: toWin,
+			ToWin:  toWin,
 		}
 		newBet := model.Bet{
-			UserID: userID,
-			GameID: gameID,
-			Selected: selected,
-			Wager: wager,
-			Status: 0,
-			Balance: 0,
-			CreatedAt: time.Now(),
+			UserID:      userID,
+			GameID:      gameID,
+			Selected:    selected,
+			Wager:       wager,
+			Status:      0,
+			Balance:     0,
+			CreatedAt:   time.Now(),
 			LastUpdated: time.Now(),
 		}
 		_, err = db.Bets.InsertOne(params.Context, newBet)
 		if err != nil {
-			log.Println(err)
 			return nil, err
 		}
 		return &BetOrderStatus{1}, nil

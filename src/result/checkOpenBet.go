@@ -1,17 +1,18 @@
 package result
 
 import (
-	"log"
 	"context"
+	"log"
+	"sport_bookie_server/src/db"
 	"sport_bookie_server/src/model"
 	"time"
-	"sport_bookie_server/src/db"
+
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// CheckOpenBet ...
-func CheckOpenBet() {
-	betsWithGame, _ := db.FindBets(context.TODO(), bson.M{ "status": 0 })
+// FinalOpenBetResult ...
+func FinalOpenBetResult() {
+	betsWithGame, _ := db.FindBets(context.TODO(), bson.M{"status": 0})
 	for _, betWithGame := range betsWithGame {
 		if betWithGame.Game.Status == 0 {
 			continue
@@ -30,7 +31,7 @@ func CheckOpenBet() {
 				"homePoints": homeScore + selectedPoints,
 				"awayPoints": awayScore + selectedPoints,
 			}
-			var won = map[string]map[string]bool {
+			var won = map[string]map[string]bool{
 				"money": {
 					"homeOdd": homeScore > awayScore,
 					"awayOdd": awayScore > homeScore,
@@ -40,7 +41,7 @@ func CheckOpenBet() {
 					"awayOdd": spreadPointsAdjust[selectedPointsType] > homeScore,
 				},
 				"total": {
-					"overOdd": totalScore > selectedPoints,
+					"overOdd":  totalScore > selectedPoints,
 					"underOdd": totalScore < selectedPoints,
 				},
 				"draw": {
@@ -49,7 +50,7 @@ func CheckOpenBet() {
 			}
 			if won[selectedLineType][selectedOddType] {
 				newBetBalance = betWithGame.Wager.ToWin
-			}else{
+			} else {
 				newBetBalance = -betWithGame.Wager.AtRisk
 			}
 			newBetStatus = 1
@@ -58,19 +59,17 @@ func CheckOpenBet() {
 			newBetStatus = 2
 		}
 		var newBet = model.Bet{
-			UserID: betWithGame.UserID ,
-			GameID: betWithGame.GameID,
-			Selected: betWithGame.Selected,
-			Wager: betWithGame.Wager,
-			Status: newBetStatus,
-			Balance: newBetBalance,
-			CreatedAt: betWithGame.CreatedAt,
+			UserID:      betWithGame.UserID,
+			GameID:      betWithGame.GameID,
+			Selected:    betWithGame.Selected,
+			Wager:       betWithGame.Wager,
+			Status:      newBetStatus,
+			Balance:     newBetBalance,
+			CreatedAt:   betWithGame.CreatedAt,
 			LastUpdated: time.Now(),
 		}
-		db.Bets.FindOneAndReplace(context.TODO(), bson.M{"_id": betWithGame.ID }, newBet)
+		db.Bets.FindOneAndReplace(context.TODO(), bson.M{"_id": betWithGame.ID}, newBet)
 		log.Printf("update %v, %v, %v\n", "result", betWithGame.UserID, newBet.Balance)
 	}
 	return
 }
-
-

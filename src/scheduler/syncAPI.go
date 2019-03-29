@@ -1,12 +1,12 @@
 package scheduler
 
 import (
-	"sport_bookie_server/src/result"
-	"sport_bookie_server/src/oddprovider/pickmon"
-	"log"
-	"time"
 	"fmt"
+	"log"
 	"sport_bookie_server/src/config"
+	"sport_bookie_server/src/oddprovider/pickmon"
+	"sport_bookie_server/src/result"
+	"time"
 )
 
 var gameURL = fmt.Sprintf("https://api.pickmonitor.com/lines.php?uid=%v&key=%v&graded=%v&full_call=1", config.PICKMONUID, config.PICKMONKEY, "0")
@@ -39,14 +39,14 @@ func UpdateScore() {
 // SyncProvider ...
 func SyncProvider() {
 	go func() {
-		for range time.Tick(config.SYNCGAMEDURATION){
+		for range time.Tick(config.SYNCGAMEDURATION) {
 			UpdateGame()
 		}
 	}()
 	go func() {
-		for range time.Tick(config.SYNCSCOREDURATION){
+		for range time.Tick(config.SYNCSCOREDURATION) {
 			UpdateScore()
-			result.CheckOpenBet()
+			result.FinalOpenBetResult()
 		}
 	}()
 }
