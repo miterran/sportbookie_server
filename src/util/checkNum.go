@@ -11,5 +11,5 @@ func IsValidPoints(val float64) bool {
 
 // IsIntegral ...
 func IsIntegral(val float64) bool {
-    return val == float64(int(val))
+	return val == float64(int(val))
 }

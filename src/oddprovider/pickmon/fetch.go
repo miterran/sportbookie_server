@@ -1,8 +1,8 @@
 package pickmon
 
 import (
-	"net/http"
 	"encoding/xml"
+	"net/http"
 )
 
 // FetchGames ...

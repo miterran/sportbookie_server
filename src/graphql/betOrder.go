@@ -62,15 +62,12 @@ var SubmitBetOrder = &graphql.Field{
 	},
 	Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 
+		// check risk amount
 		atRisk, _ := params.Args["atRisk"].(int)
 		if atRisk < 10 {
 			return &BetOrderStatus{2}, nil
 		}
-		uid := params.Context.Value("ID").(string)
-		userID, err := primitive.ObjectIDFromHex(uid)
-		if err != nil {
-			return nil, err
-		}
+
 		selectedGameID, _ := params.Args["selectedGameID"].(string)
 		selectedLineType, _ := params.Args["selectedLineType"].(string)
 		selectedPointsType, _ := params.Args["selectedPointsType"].(string)
@@ -84,16 +81,61 @@ var SubmitBetOrder = &graphql.Field{
 		if err != nil {
 			return nil, err
 		}
+
+		// check game exists
 		err = db.Games.FindOne(params.Context, bson.M{"_id": gameID}).Decode(&game)
 		if err != nil {
 			return &BetOrderStatus{6}, nil
 		}
+
+		// check game expires
 		if game.CutOffTime.Before(time.Now()) || game.Status != 0 {
 			return &BetOrderStatus{5}, nil
 		}
+
+		// check latest odd
 		if !game.Line.CompareLatestLine(selectedLineType, selectedPointsType, selectedPoints, selectOddType, selectedOdd) {
 			return &BetOrderStatus{4}, nil
 		}
+
+		// check user credit
+		uid := params.Context.Value("ID").(string)
+		userID, err := primitive.ObjectIDFromHex(uid)
+		if err != nil {
+			return nil, err
+		}
+		var state = map[string]int{
+			"toWin":   0,
+			"atRisk":  0,
+			"balance": 0,
+		}
+		openBetsWithGame, err := db.GetUserOpenBets(params.Context, userID)
+		if err != nil {
+			return nil, err
+		}
+		for _, openBetWithGame := range openBetsWithGame {
+			state["toWin"] += openBetWithGame.Wager.ToWin
+			state["atRisk"] += openBetWithGame.Wager.AtRisk
+		}
+		year, week := time.Now().ISOWeek()
+		currentWeekHistoryBetsWithGame, err := db.GetUserHistoryBetsFromISOWeek(params.Context, userID, year, week)
+		if err != nil {
+			return nil, err
+		}
+		for _, currentWeekHistoryBetWithGame := range currentWeekHistoryBetsWithGame {
+			state["balance"] += currentWeekHistoryBetWithGame.Balance
+		}
+		var user model.User
+		err = db.Users.FindOne(params.Context, bson.M{"_id": userID}).Decode(&user)
+		if err != nil {
+			return nil, err
+		}
+		available := user.InitialCredit + state["balance"] - atRisk
+		if available < 0 {
+			return &BetOrderStatus{3}, nil
+		}
+
+		// place new order
 		selected := model.Selected{
 			LineType:   selectedLineType,
 			PointsType: selectedPointsType,

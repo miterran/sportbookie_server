@@ -21,5 +21,5 @@ func ISOWeekRange(year int, week int) (time.Time, time.Time) {
 		date = date.AddDate(0, 0, 1)
 		isoYear, isoWeek = date.ISOWeek()
 	}
-	return date, date.AddDate(0,0,7).Add(-1*time.Second)
+	return date, date.AddDate(0, 0, 7).Add(-1 * time.Second)
 }

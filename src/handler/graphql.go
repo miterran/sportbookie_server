@@ -3,6 +3,7 @@ package handler
 import (
 	"sport_bookie_server/src/graphql"
 	"sport_bookie_server/src/jwt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/graphql-go/handler"
 )

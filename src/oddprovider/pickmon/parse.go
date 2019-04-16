@@ -1,23 +1,24 @@
 package pickmon
 
 import (
+	"encoding/xml"
 	"io"
 	"strings"
 	"time"
-	"encoding/xml"
+
 	"golang.org/x/text/encoding/charmap"
 )
 
 // Score ...
 type Score struct {
-	Home float64 `xml:"team1"`
-	Away float64 `xml:"team2"`
-	Winner string `xml:"winner"`
+	Home   float64 `xml:"team1"`
+	Away   float64 `xml:"team2"`
+	Winner string  `xml:"winner"`
 }
 
 // Team ...
 type Team struct {
-	Rot string `xml:"rotnum"`
+	Rot  string         `xml:"rotnum"`
 	Name CustomTeamName `xml:"name"`
 }
 
@@ -31,44 +32,44 @@ type Money struct {
 // Spread ...
 type Spread struct {
 	Points float64 `xml:"points"`
-	Home float64 `xml:"team1"`
-	Away float64 `xml:"team2"`
+	Home   float64 `xml:"team1"`
+	Away   float64 `xml:"team2"`
 }
 
 // Total ...
 type Total struct {
 	Points float64 `xml:"points"`
-	Over float64 `xml:"over"`
-	Under float64 `xml:"under"`
+	Over   float64 `xml:"over"`
+	Under  float64 `xml:"under"`
 }
 
 // Line ...
 type Line struct {
-	Periodnum int `xml:"periodnum"`
-	Period string `xml:"perioddesc"`
+	Periodnum  int        `xml:"periodnum"`
+	Period     string     `xml:"perioddesc"`
 	CutOffTime CustomTime `xml:"wagercutoff"`
-	Money Money `xml:"money"`
-	Spread Spread `xml:"spread"`
-	Total Total `xml:"total"`
-	Score Score `xml:"score"`
+	Money      Money      `xml:"money"`
+	Spread     Spread     `xml:"spread"`
+	Total      Total      `xml:"total"`
+	Score      Score      `xml:"score"`
 }
 
 // Game ...
 type Game struct {
-	ID    string   `xml:"id"`
-	Header    string   `xml:"header"`
-	Sport  CustomSport   `xml:"sporttype"`
-	League CustomLeague `xml:"sportsubtype"`
-	Void int `xml:"void"`
-	MatchTime CustomTime `xml:"gamedate"`
-	HomeTeam Team `xml:"team1"`
-	AwayTeam Team `xml:"team2"`
-	Line Line `xml:"line"`
+	ID        string       `xml:"id"`
+	Header    string       `xml:"header"`
+	Sport     CustomSport  `xml:"sporttype"`
+	League    CustomLeague `xml:"sportsubtype"`
+	Void      int          `xml:"void"`
+	MatchTime CustomTime   `xml:"gamedate"`
+	HomeTeam  Team         `xml:"team1"`
+	AwayTeam  Team         `xml:"team2"`
+	Line      Line         `xml:"line"`
 }
 
 // Lines ...
 type Lines struct {
-	Games   []Game   `xml:"game"`
+	Games []Game `xml:"game"`
 }
 
 // CustomTime ...
@@ -97,12 +98,12 @@ type SportType map[string]string
 
 // SportTypeConvert ...
 var SportTypeConvert = SportType{
-	"Basketball" : "Basketball",
-	"Football" : "Football",
-	"Baseball": "Baseball",
-	"Soccer": "Soccer",
-	"Hockey": "Hockey",
-	"Fighting": "Fighting",
+	"Basketball": "Basketball",
+	"Football":   "Football",
+	"Baseball":   "Baseball",
+	"Soccer":     "Soccer",
+	"Hockey":     "Hockey",
+	"Fighting":   "Fighting",
 }
 
 // CustomSport ...
@@ -127,15 +128,16 @@ func (cst *CustomSport) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 
 // LeagueType ...
 type LeagueType map[string]string
+
 // LeagueTypeConvert ...
 var LeagueTypeConvert = LeagueType{
-	"NBA" : "NBA",
-	"NFL" : "NFL",
-	"MLB": "MLB",
-	"NHL": "NHL",
-	"European Cup": "European Cup",
-	"Boxing": "Boxing",
-	"UFC": "UFC",
+	"NBA":           "NBA",
+	"NFL":           "NFL",
+	"MLB":           "MLB",
+	"NHL":           "NHL",
+	"European Cup":  "European Cup",
+	"Boxing":        "Boxing",
+	"UFC":           "UFC",
 	"International": "International",
 }
 
@@ -161,7 +163,7 @@ func (cst *CustomLeague) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 
 // MakeCharsetReader ...
 func MakeCharsetReader(charset string, input io.Reader) (io.Reader, error) {
-    return charmap.Windows1252.NewDecoder().Reader(input), nil
+	return charmap.Windows1252.NewDecoder().Reader(input), nil
 }
 
 // CustomTeamName ...

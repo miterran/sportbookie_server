@@ -3,24 +3,25 @@ package pickmon
 import (
 	"context"
 	"log"
+	"math"
+	"sport_bookie_server/src/db"
 	"sport_bookie_server/src/model"
+	"sport_bookie_server/src/util"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"sport_bookie_server/src/db"
-	"time"
-	"sport_bookie_server/src/util"
-	"math"
 )
 
 // Save ...
 func Save(lines Lines) error {
 	for _, game := range lines.Games {
-		var homeTeam = model.TeamDetail {
-			Rot: game.HomeTeam.Rot,
+		var homeTeam = model.TeamDetail{
+			Rot:  game.HomeTeam.Rot,
 			Name: game.HomeTeam.Name.Parse,
 		}
-		var awayTeam = model.TeamDetail {
-			Rot: game.AwayTeam.Rot,
+		var awayTeam = model.TeamDetail{
+			Rot:  game.AwayTeam.Rot,
 			Name: game.AwayTeam.Name.Parse,
 		}
 		var team = model.Team{
@@ -39,31 +40,31 @@ func Save(lines Lines) error {
 			var awayPoint float64
 			if game.Line.Spread.Points > 0 {
 				awayPoint = -game.Line.Spread.Points
-			}else{
+			} else {
 				awayPoint = math.Abs(game.Line.Spread.Points)
 			}
-			spread = model.Spread {
+			spread = model.Spread{
 				HomePoints: game.Line.Spread.Points,
 				AwayPoints: awayPoint,
-				HomeOdd: game.Line.Spread.Home,
-				AwayOdd: game.Line.Spread.Away,
+				HomeOdd:    game.Line.Spread.Home,
+				AwayOdd:    game.Line.Spread.Away,
 			}
 		}
 		var total model.Total
 		if util.IsValidPoints(game.Line.Total.Points) {
-			total = model.Total {
-				Points: game.Line.Total.Points,
-				OverOdd: game.Line.Total.Over,
+			total = model.Total{
+				Points:   game.Line.Total.Points,
+				OverOdd:  game.Line.Total.Over,
 				UnderOdd: game.Line.Total.Under,
 			}
 		}
 		var line = model.Line{
-			Money: money,
+			Money:  money,
 			Spread: spread,
-			Total: total,
-			Draw: draw,
+			Total:  total,
+			Draw:   draw,
 		}
-		var score = model.Score {
+		var score = model.Score{
 			Home: game.Line.Score.Home,
 			Away: game.Line.Score.Away,
 		}
@@ -75,20 +76,20 @@ func Save(lines Lines) error {
 			status = 2
 		}
 		var newGame = model.Game{
-			Provider: "pickmon",
-			ProviderID: game.ID,
-			Sport: game.Sport.Parse,
-			League: game.League.Parse,
-			MatchTime: game.MatchTime.Parse,
-			Team: team,
-			Period: game.Line.Periodnum,
-			CutOffTime: game.Line.CutOffTime.Parse,
-			Line: line,
-			Score: score,
-			Status: status,
+			Provider:    "pickmon",
+			ProviderID:  game.ID,
+			Sport:       game.Sport.Parse,
+			League:      game.League.Parse,
+			MatchTime:   game.MatchTime.Parse,
+			Team:        team,
+			Period:      game.Line.Periodnum,
+			CutOffTime:  game.Line.CutOffTime.Parse,
+			Line:        line,
+			Score:       score,
+			Status:      status,
 			LastUpdated: time.Now(),
 		}
-		if game.Sport.Parse == "" || game.League.Parse == ""  {
+		if game.Sport.Parse == "" || game.League.Parse == "" {
 			continue
 		}
 		filter := bson.M{"provider": "pickmon", "providerID": newGame.ProviderID, "status": 0}

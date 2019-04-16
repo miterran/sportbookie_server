@@ -3,10 +3,11 @@ package handler
 import (
 	"log"
 	"net/http"
-	"sport_bookie_server/src/middleware"
-	"time"
 	"sport_bookie_server/src/db"
+	"sport_bookie_server/src/middleware"
 	"sport_bookie_server/src/model"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -47,11 +48,11 @@ func RegisterHandler(c *gin.Context) {
 	}
 	hashPassword := string(hash)
 	newUser := model.User{
-		Username:     username,
-		Password:     hashPassword,
+		Username:      username,
+		Password:      hashPassword,
 		InitialCredit: 10000,
-		CreatedAt:    time.Now(),
-		LastOnlineAt: time.Now(),
+		CreatedAt:     time.Now(),
+		LastOnlineAt:  time.Now(),
 	}
 	res, err := db.Users.InsertOne(c, newUser)
 	if err != nil {
