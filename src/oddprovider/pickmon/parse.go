@@ -121,9 +121,8 @@ func (cst *CustomSport) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	v, ok := SportTypeConvert[s]
 	if ok {
 		*cst = CustomSport{v}
-		return nil
 	}
-	return err
+	return nil
 }
 
 // LeagueType ...
@@ -131,14 +130,14 @@ type LeagueType map[string]string
 
 // LeagueTypeConvert ...
 var LeagueTypeConvert = LeagueType{
-	"NBA":           "NBA",
-	"NFL":           "NFL",
-	"MLB":           "MLB",
-	"NHL":           "NHL",
-	"European Cup":  "European Cup",
-	"Boxing":        "Boxing",
-	"UFC":           "UFC",
-	"International": "International",
+	"NBA":          "NBA",
+	"NFL":          "NFL",
+	"MLB":          "MLB",
+	"NHL":          "NHL",
+	"European Cup": "European Cup",
+	// "Boxing":        "Boxing",
+	"UFC": "UFC",
+	// "International": "International",
 }
 
 // CustomLeague ...
@@ -156,9 +155,8 @@ func (cst *CustomLeague) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	v, ok := LeagueTypeConvert[s]
 	if ok {
 		*cst = CustomLeague{v}
-		return nil
 	}
-	return err
+	return nil
 }
 
 // MakeCharsetReader ...
