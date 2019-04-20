@@ -2,11 +2,11 @@ package db
 
 import (
 	"context"
-	"sport_bookie_server/src/model"
-	"sport_bookie_server/src/util"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"sport_bookie_server/src/model"
+	"sport_bookie_server/src/util"
+	"time"
 )
 
 // GetUserOpenBets ...
@@ -75,4 +75,30 @@ func FindBets(c context.Context, filter bson.M) ([]model.BetWithGame, error) {
 		betsWithGame = append([]model.BetWithGame{betWithGame}, betsWithGame...)
 	}
 	return betsWithGame, nil
+}
+
+// GetUserState get user current week state .. toWin | atRisk | balance
+func GetUserState(c context.Context, userID primitive.ObjectID) (map[string]int, []model.BetWithGame, error) {
+	var state = map[string]int{
+		"toWin":   0,
+		"atRisk":  0,
+		"balance": 0,
+	}
+	openBetsWithGame, err := GetUserOpenBets(c, userID)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, openBetWithGame := range openBetsWithGame {
+		state["toWin"] += openBetWithGame.Wager.ToWin
+		state["atRisk"] += openBetWithGame.Wager.AtRisk
+	}
+	year, week := time.Now().ISOWeek()
+	currentWeekHistoryBetsWithGame, err := GetUserHistoryBetsFromISOWeek(c, userID, year, week)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, currentWeekHistoryBetWithGame := range currentWeekHistoryBetsWithGame {
+		state["balance"] += currentWeekHistoryBetWithGame.Balance
+	}
+	return state, openBetsWithGame, nil
 }

@@ -104,26 +104,9 @@ var SubmitBetOrder = &graphql.Field{
 		if err != nil {
 			return nil, err
 		}
-		var state = map[string]int{
-			"toWin":   0,
-			"atRisk":  0,
-			"balance": 0,
-		}
-		openBetsWithGame, err := db.GetUserOpenBets(params.Context, userID)
+		state, _, err := db.GetUserState(params.Context, userID)
 		if err != nil {
 			return nil, err
-		}
-		for _, openBetWithGame := range openBetsWithGame {
-			state["toWin"] += openBetWithGame.Wager.ToWin
-			state["atRisk"] += openBetWithGame.Wager.AtRisk
-		}
-		year, week := time.Now().ISOWeek()
-		currentWeekHistoryBetsWithGame, err := db.GetUserHistoryBetsFromISOWeek(params.Context, userID, year, week)
-		if err != nil {
-			return nil, err
-		}
-		for _, currentWeekHistoryBetWithGame := range currentWeekHistoryBetsWithGame {
-			state["balance"] += currentWeekHistoryBetWithGame.Balance
 		}
 		var user model.User
 		err = db.Users.FindOne(params.Context, bson.M{"_id": userID}).Decode(&user)
