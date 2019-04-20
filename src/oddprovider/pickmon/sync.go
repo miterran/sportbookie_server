@@ -10,7 +10,7 @@ import (
 )
 
 var wg = new(sync.WaitGroup)
-var lastUpdate = time.Now().Add(-5 * time.Minute)
+var lastUpdate = time.Now().Add(-1 * config.SYNCCD)
 
 var gameURL = fmt.Sprintf("https://api.pickmonitor.com/lines.php?uid=%v&key=%v&graded=%v&full_call=1", config.PICKMONUID, config.PICKMONKEY, "0")
 var scoreURL = fmt.Sprintf("https://api.pickmonitor.com/lines.php?uid=%v&key=%v&graded=%v&full_call=1", config.PICKMONUID, config.PICKMONKEY, "1")
