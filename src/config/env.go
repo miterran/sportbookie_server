@@ -18,54 +18,46 @@ var PICKMONUID string
 // PICKMONKEY env
 var PICKMONKEY string
 
-// SYNCGAMEDURATION env
-var SYNCGAMEDURATION time.Duration
-
-// SYNCSCOREDURATION env
-var SYNCSCOREDURATION time.Duration
+// SYNCCD env
+var SYNCCD time.Duration
 
 func init() {
+
 	PORT = os.Getenv("PORT")
 	if PORT == "" {
 		log.Fatal("missing env PORT, ie: 8080")
 	}
+
 	MONGOURL = os.Getenv("MONGO_URL")
 	if MONGOURL == "" {
 		log.Fatal("missing env PORT, ie: mongodb://username:password@ds000000.mlab.com:00000/db")
 	}
+
 	PICKMONUID = os.Getenv("PICKMON_UID")
 	if PICKMONUID == "" {
 		log.Fatal("missing env PICKMONUID, API UID from www.pickmonitor.com")
 	}
+
 	PICKMONKEY = os.Getenv("PICKMON_KEY")
 	if PICKMONUID == "" {
 		log.Fatal("missing env PICKMONKEY, API KEY from www.pickmonitor.com")
 	}
 
-	gameDuration := os.Getenv("SYNC_GAME_DURATION")
-	if gameDuration == "" {
-		gameDuration = "2h"
+	synccd := os.Getenv("SYNC_CD")
+	if synccd == "" {
+		synccd = "5m"
 	}
-	syncGameDuration, err := time.ParseDuration(gameDuration)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if syncGameDuration.Minutes() < 4 {
-		log.Fatal("SYNC_GAME_DURATION must greater then 4 minutes")
-	}
-	SYNCGAMEDURATION = syncGameDuration
 
-	scoreDuration := os.Getenv("SYNC_SCORE_DURATION")
-	if scoreDuration == "" {
-		scoreDuration = "4h"
-	}
-	syncScoreDuration, err := time.ParseDuration(scoreDuration)
+	synccdduration, err := time.ParseDuration(synccd)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if syncScoreDuration.Minutes() < 30 {
-		log.Fatal("SYNC_SCORE_DURATION must greater then 30 minutes")
+	if synccdduration.Minutes() < 3 {
+		log.Fatal("SYNC COOL DOWN must greater then 3 minutes")
 	}
-	SYNCSCOREDURATION = syncScoreDuration
+	if synccdduration.Minutes() > 60 {
+		log.Fatal("SYNC COOL DOWN must lesser then 60 minutes")
+	}
+	SYNCCD = synccdduration
 
 }
