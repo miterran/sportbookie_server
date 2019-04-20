@@ -210,7 +210,7 @@ var GamesQuery = &graphql.Field{
 			},
 		}
 		options := options.FindOptions{}
-		options.Sort = bson.D{primitive.E{Key: "matchTime", Value: -1}}
+		options.Sort = bson.D{primitive.E{Key: "matchTime", Value: 1}}
 		cur, err := db.Games.Find(params.Context, filter, &options)
 		defer cur.Close(params.Context)
 		if err != nil {
