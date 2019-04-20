@@ -88,6 +88,10 @@ func findOneAndReplace(wg *sync.WaitGroup, game Game) {
 		return
 	}
 
+	if (money.HomeOdd == 0 || money.AwayOdd == 0) && (spread.HomeOdd == 0 || spread.AwayOdd == 0) && draw.Odd == 00 && (total.OverOdd == 0 || total.UnderOdd == 0) {
+		return
+	}
+
 	var line = model.Line{
 		Money:  money,
 		Spread: spread,
