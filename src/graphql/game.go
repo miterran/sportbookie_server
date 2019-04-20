@@ -4,6 +4,7 @@ import (
 	"github.com/graphql-go/graphql"
 	"sport_bookie_server/src/db"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"sport_bookie_server/src/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
@@ -208,7 +209,9 @@ var GamesQuery = &graphql.Field{
 				"$gt": time.Now(),
 			},
 		}
-		cur, err := db.Games.Find(params.Context, filter)
+		options := options.FindOptions{}
+		options.Sort = bson.D{primitive.E{Key: "matchTime", Value: -1}}
+		cur, err := db.Games.Find(params.Context, filter, &options)
 		defer cur.Close(params.Context)
 		if err != nil {
 			log.Println(err)

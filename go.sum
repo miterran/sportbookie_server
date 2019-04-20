@@ -267,6 +267,7 @@ go.mongodb.org/mongo-driver v0.3.0/go.mod h1:u7ryQJ+DOzQmeO7zB6MHyr8jkEQvC8vH7qL
 go.mongodb.org/mongo-driver v1.0.0-rc1 h1:Y9CfPSIKyLMS9MkrjBF+Nmo1SoEgPuyhiyVP3wd1oxY=
 go.mongodb.org/mongo-driver v1.0.0-rc1/go.mod h1:u7ryQJ+DOzQmeO7zB6MHyr8jkEQvC8vH7qLUO4lqsUM=
 go.mongodb.org/mongo-driver v1.0.0 h1:KxPRDyfB2xXnDE2My8acoOWBQkfv3tz0SaWTRZjJR0c=
+go.mongodb.org/mongo-driver v1.0.1 h1:r2xNB8juGGrZVcIjX2TpY7HUfz+pNYq+GIuC9h6URZg=
 go.opencensus.io v0.18.0/go.mod h1:vKdFvxhtzZ9onBp9VKHK8z/sRpBMnKAsufL7wlDrCOA=
 go.opencensus.io v0.19.1/go.mod h1:gug0GbSHa8Pafr0d2urOSgoXHZ6x/RUlaiT0d9pqb4A=
 go4.org v0.0.0-20180809161055-417644f6feb5/go.mod h1:MkTOUMDaeVYJUOUsaDXIhWPZYa1yOyC1qaOBpL57BhE=
