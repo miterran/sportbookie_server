@@ -92,6 +92,10 @@ func findOneAndReplace(wg *sync.WaitGroup, game Game) {
 		return
 	}
 
+	if game.Sport.Parse == "Basketball" && game.League.Parse == "NBA" && (spread.HomeOdd == 0 || spread.AwayOdd == 0) && (total.OverOdd == 0 || total.UnderOdd == 0) {
+		return
+	}
+
 	var line = model.Line{
 		Money:  money,
 		Spread: spread,
