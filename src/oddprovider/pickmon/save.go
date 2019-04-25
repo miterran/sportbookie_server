@@ -15,18 +15,23 @@ import (
 )
 
 // Save ...
-func Save(lines Lines) error {
+func Save(lines Lines) {
 	var wg sync.WaitGroup
 	wg.Add(len(lines.Games))
 	for _, game := range lines.Games {
 		go findOneAndReplace(&wg, game)
 	}
 	wg.Wait()
-	return nil
 }
 
 func findOneAndReplace(wg *sync.WaitGroup, game Game) {
 	defer wg.Done()
+
+	var status = 0
+	if game.Line.Score.Winner != "" {
+		status = 1
+	}
+
 	var homeTeam = model.TeamDetail{
 		Rot:  game.HomeTeam.Rot,
 		Name: game.HomeTeam.Name.Parse,
@@ -44,7 +49,7 @@ func findOneAndReplace(wg *sync.WaitGroup, game Game) {
 		AwayOdd: game.Line.Money.Away,
 	}
 
-	if money.HomeOdd > 1000.00 || money.AwayOdd > 1000.00 {
+	if status == 0 && (money.HomeOdd < -1000.00 || money.HomeOdd > 1000.00 || money.AwayOdd < -1000.00 || money.AwayOdd > 1000.00) {
 		return
 	}
 
@@ -52,7 +57,7 @@ func findOneAndReplace(wg *sync.WaitGroup, game Game) {
 		Odd: game.Line.Money.Draw,
 	}
 
-	if draw.Odd > 1000.00 {
+	if status == 0 && (draw.Odd < -1000.00 || draw.Odd > 1000.00) {
 		return
 	}
 
@@ -72,7 +77,7 @@ func findOneAndReplace(wg *sync.WaitGroup, game Game) {
 		}
 	}
 
-	if spread.HomeOdd > 1000.00 || spread.AwayOdd > 1000.00 {
+	if status == 0 && (spread.HomeOdd < -1000.00 || spread.HomeOdd > 1000.00 || spread.AwayOdd < -1000.00 || spread.AwayOdd > 1000.00) {
 		return
 	}
 
@@ -84,11 +89,11 @@ func findOneAndReplace(wg *sync.WaitGroup, game Game) {
 			UnderOdd: game.Line.Total.Under,
 		}
 	}
-	if total.OverOdd > 1000.00 || total.UnderOdd > 1000.00 {
+	if status == 0 && (total.OverOdd < -1000.00 || total.OverOdd > 1000.00 || total.UnderOdd < -1000.00 || total.UnderOdd > 1000.00) {
 		return
 	}
 
-	if (money.HomeOdd == 0 || money.AwayOdd == 0) && (spread.HomeOdd == 0 || spread.AwayOdd == 0) && draw.Odd == 00 && (total.OverOdd == 0 || total.UnderOdd == 0) {
+	if status == 0 && ((money.HomeOdd == 0 || money.AwayOdd == 0) && (spread.HomeOdd == 0 || spread.AwayOdd == 0) && draw.Odd == 00 && (total.OverOdd == 0 || total.UnderOdd == 0)) {
 		return
 	}
 
@@ -106,10 +111,7 @@ func findOneAndReplace(wg *sync.WaitGroup, game Game) {
 		Home: game.Line.Score.Home,
 		Away: game.Line.Score.Away,
 	}
-	var status = 0
-	if game.Line.Score.Winner != "" {
-		status = 1
-	}
+
 	if game.Void != 0 {
 		status = 2
 	}

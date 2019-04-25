@@ -5,8 +5,8 @@ import (
 	"log"
 	"sport_bookie_server/src/config"
 	"sport_bookie_server/src/result"
-	"time"
 	"sync"
+	"time"
 )
 
 var wg = new(sync.WaitGroup)
@@ -21,10 +21,7 @@ func UpdateGame() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = Save(lines)
-	if err != nil {
-		log.Fatal(err)
-	}
+	Save(lines)
 }
 
 // UpdateScore ...
@@ -33,10 +30,7 @@ func UpdateScore() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = Save(lines)
-	if err != nil {
-		log.Fatal(err)
-	}
+	Save(lines)
 }
 
 // Sync ...
@@ -51,7 +45,7 @@ func Sync() {
 		}()
 		go func() {
 			UpdateScore()
-			result.FinalOpenBetResult()
+			result.FinalizeResult()
 			wg.Done()
 		}()
 	}

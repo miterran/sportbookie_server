@@ -11,8 +11,8 @@ import (
 	"sync"
 )
 
-// FinalOpenBetResult ...
-func FinalOpenBetResult() {
+// Finalize Open Bet Result ...
+func FinalizeResult() {
 	betsWithGame, _ := db.FindBets(context.TODO(), bson.M{"status": 0})
 	var wg sync.WaitGroup
 	wg.Add(len(betsWithGame))
@@ -20,7 +20,6 @@ func FinalOpenBetResult() {
 		go findOneAndReplace(&wg, betWithGame)
 	}
 	wg.Wait()
-	return
 }
 
 func findOneAndReplace(wg *sync.WaitGroup, betWithGame model.BetWithGame) {
