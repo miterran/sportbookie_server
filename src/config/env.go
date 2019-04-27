@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"time"
@@ -22,6 +23,8 @@ var PICKMONKEY string
 var SYNCCD time.Duration
 
 func init() {
+
+	godotenv.Load()
 
 	PORT = os.Getenv("PORT")
 	if PORT == "" {

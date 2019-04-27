@@ -37,6 +37,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.8.3 // indirect
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/hsukvn/go-gin-graphql-template v0.0.0-20181214093246-f5d2d70d485f
+	github.com/joho/godotenv v1.3.0
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/labstack/echo v3.3.5+incompatible // indirect

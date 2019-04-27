@@ -2,12 +2,12 @@ package graphql
 
 import (
 	"github.com/graphql-go/graphql"
-	"sport_bookie_server/src/db"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"sport_bookie_server/src/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"sport_bookie_server/src/db"
+	"sport_bookie_server/src/model"
 	"time"
 )
 
@@ -203,14 +203,14 @@ var GamesQuery = &graphql.Field{
 	Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 		sport := params.Args["sport"].(string)
 		filter := bson.M{
-			"sport": sport,
+			"sport":  sport,
 			"status": 0,
 			"cutOffTime": bson.M{
 				"$gt": time.Now(),
 			},
 		}
 		options := options.FindOptions{}
-		options.Sort = bson.D{primitive.E{Key: "matchTime", Value: 1}}
+		options.Sort = bson.D{primitive.E{Key: "matchTime", Value: 1}, primitive.E{Key: "providerID", Value: 1}}
 		cur, err := db.Games.Find(params.Context, filter, &options)
 		defer cur.Close(params.Context)
 		if err != nil {
@@ -219,11 +219,11 @@ var GamesQuery = &graphql.Field{
 		}
 		var games []model.Game
 		for cur.Next(params.Context) {
-		    var game model.Game
-		    err := cur.Decode(&game)
-		    if err != nil { 
-			   log.Println(err)
-			   return nil, err
+			var game model.Game
+			err := cur.Decode(&game)
+			if err != nil {
+				log.Println(err)
+				return nil, err
 			}
 			games = append(games, game)
 		}
