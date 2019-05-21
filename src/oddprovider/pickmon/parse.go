@@ -135,6 +135,7 @@ var LeagueTypeConvert = LeagueType{
 	"MLB":          "MLB",
 	"NHL":          "NHL",
 	"European Cup": "European Cup",
+	"FIFA":         "FIFA",
 	// "Boxing":        "Boxing",
 	"UFC": "UFC",
 	// "International": "International",
